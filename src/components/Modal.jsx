@@ -8,7 +8,7 @@ const Modal = ({ modalVisibility, handleHideModal, register, handleSubmit, creat
 
   return (
     <section className={`absolute top-0 min-h-screen w-screen bg-[#e6e6e6] flex justify-center items-center ${modalVisibility? 'block': 'hidden'}`}>
-      <article className="mt-28 mb-8 relative w-[90vw] bg-dark-gray p-14 pt-20 rounded-3xl shadow-xl shadow-slate-500">
+      <article className="mt-28 mb-8 relative w-[90vw] bg-dark-gray p-14 pt-20 rounded-3xl shadow-xl shadow-slate-500  max-w-[480px]">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2/3 bg-[url(/user-picture-2.jpg)] h-[150px] aspect-square bg-cover bg-center rounded-full"></div>
         <h2 className="text-light-green font-bold">{titleForm}</h2>
         <form

@@ -3,17 +3,35 @@ import Modal from "./components/Modal";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import UsersList from "./components/UsersList";
+import DeletionModal from "./components/DeletionModal";
 
 const App = () => {
   const [users, setUsers] = useState([]);
   const [modalVisibility, setModalVisibility] = useState(false);
-  const [userToUpdate, setUserToUpdate] = useState(null)
-
+  const [deletionModalVisibility, setDeletionModalVisibility] = useState(false);
+  const [userToUpdate, setUserToUpdate] = useState(null);
+  const [userToDelete, setUserToDelete] = useState(null);
   const { register, handleSubmit, reset } = useForm();
 
   const handleShowModal = () => {
     setModalVisibility(true);
   };
+
+  const showDeletionModal = (user) => {
+    setDeletionModalVisibility(true);
+    setUserToDelete(user)
+  };
+
+  const hideDeletionModal = () => {
+    setDeletionModalVisibility(false);
+    setUserToDelete(null)
+  };
+
+  const handleDeleteUser = () => {
+    hideDeletionModal()
+    deleteUser(userToDelete.id)
+    // console.log(userToDelete)
+  }
 
   const handleHideModal = () => {
     setModalVisibility(false);
@@ -24,13 +42,13 @@ const App = () => {
       password: "",
       birthday: "",
     });
-    setUserToUpdate(null)
+    setUserToUpdate(null);
   };
 
   const handleUpdateUser = (user) => {
-    handleShowModal()
-    setUserToUpdate(user)
-  }
+    handleShowModal();
+    setUserToUpdate(user);
+  };
 
   const createUser = (userData) => {
     axios
@@ -55,11 +73,16 @@ const App = () => {
 
   const updateUser = (userData) => {
     axios
-      .put(`https://users-crud.academlo.tech/users/${userToUpdate.id}/`, userData)
+      .put(
+        `https://users-crud.academlo.tech/users/${userToUpdate.id}/`,
+        userData
+      )
       .then(({ data: updatedUser }) => {
-        handleHideModal()
-        const newUsers = users.map((user) => user.id == updatedUser.id? updatedUser: user)
-        setUsers(newUsers)
+        handleHideModal();
+        const newUsers = users.map((user) =>
+          user.id == updatedUser.id ? updatedUser : user
+        );
+        setUsers(newUsers);
       })
       .catch((error) => console.log(error));
   };
@@ -72,20 +95,20 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    if(userToUpdate != null){
+    if (userToUpdate != null) {
       reset(userToUpdate);
     }
-  },[reset, userToUpdate])
+  }, [reset, userToUpdate]);
 
   return (
     <main
-      className="flex flex-col text-center text-white font-lato font-normal min-h-screen bg-black [&>div]:mt-24
+      className="flex flex-col text-center text-white font-lato font-normal min-h-screen bg-black [&>div]:mt-24 items-center
     "
     >
-      <div className="grid gap-6 justify-center items-center">
+      <div className="grid gap-6 justify-center items-center max-w-[340px]">
         <h2 className="text-light-green font-bold">Lista de usuarios</h2>
         <button
-          className="text-dark-black bg-cream-gray rounded-md py-2 w-[80vw] mx-auto"
+          className="text-dark-black bg-cream-gray rounded-md py-2 w-[80vw] mx-auto max-w-[340px]"
           onClick={handleShowModal}
         >
           Crear nuevo usuario
@@ -111,11 +134,17 @@ const App = () => {
         isUpdating={!!userToUpdate}
         updateUser={updateUser}
       />
-      <UsersList
-        users={users}
-        deleteUser={deleteUser}
-        handleUpdateUser={handleUpdateUser}
+      <DeletionModal
+        deletionModalVisibility={deletionModalVisibility}
+        hideDeletionModal={hideDeletionModal}
+        handleDeleteUser={handleDeleteUser}
       />
+      {modalVisibility? <div></div> :<UsersList
+        users={users}
+        handleUpdateUser={handleUpdateUser}
+        showDeletionModal={showDeletionModal}
+      />}
+   
     </main>
   );
 };

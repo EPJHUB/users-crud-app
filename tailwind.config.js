@@ -14,6 +14,7 @@ export default {
         'light-green': '#8EFF8B',
         'cream-gray': '#CBFFDA',
         'dark-black': '#302F2F',
+        'cream-red': '#D85D5D',
       },
       fontFamily:{
         'lato': ['Lato', 'sans-serif'],
